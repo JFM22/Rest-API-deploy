@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset=""UTF-8>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Probar API Rest</title>
+        <style>
+            article {
+                border: 1px solid #ccc;
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            img {
+                height: auto;
+                width: 320px;
+                max-width: 100%;
+            }
+        </style>
+        <script type="module">
+            fetch('http://localhost:1234/movies') //fetch realiza una consulta GET a la url indicada (debe star encendido dicho servidor REST API)
+            .then(res => res.json()) //de json a objeto javascript
+            .then(movies => {
+                const html = movies.map( movie => {
+                    return `
+                        <article data-id="${movie.id}">
+                            <h2>${movie.title}</h2>
+                            <img src="${movie.poster}" alt="${movie.title}">
+                            <p>${movie.description}</p>
+                            <p>${movie.year}</p>
+                            <button>Eliminar</button>
+                        </article>
+                    `
+                }).join('') //para cada pelicula que crea un trozo html y se encadenan
+
+                document.querySelector('main').innerHTML = html
+                //se selecciona el elemento main del DOM y se establece su contenido html
+                //con innerHTML, se inserta dentro del main
+                document.addEventListener('click', e => { //escuchamos todos los clicks del documento
+                    if(e.target.matches('button')){ //si estamos haciendo click a un botón
+                        const article = e.target.closest('article') //miro el articulo que está más cerca
+                        const id = article.dataset.id //recuperar su id del dataset
+
+                        fetch(`http://localhost:1234/movies/${id}`, { //consulta DELETE a movies/id 
+                            method: 'DELETE'
+                        })
+                        .then(res => { //res.json devolvería el cuerpo de la petición en formato json a objeto JS
+                            if(res.ok){ //como NO devuelve una respuesta en json, solo comprobamos si la petición
+                                //ha ido bien con un res.ok
+                                article.remove() //también lo eliminamos del html
+                            }
+                        })
+                    }
+                })
+            })
+        </script>
+    </head>
+<body>
+    <main></main>
+</body>
+</html>

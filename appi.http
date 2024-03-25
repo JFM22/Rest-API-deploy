@@ -1,0 +1,56 @@
+###Recuperar todas las películas
+GET http://localhost:1234/movies
+
+###Recuperar una película por id (no existe)
+GET http://localhost:1234/movies/1
+
+###Recuperar pelicula batman
+GET http://localhost:1234/movies/c8a7d63f-3b04-44d3-9d95-8782fd7dcfaf
+
+###Recuperar todas las películas por un género (por filtro parado como query string)
+GET http://localhost:1234/movies?genre=Action
+#También podría ser por url GET http://localhost:1234/movies/genre/1 (paginación) u otras formas
+
+###Crear una película con POST
+POST http://localhost:1234/movies
+Content-Type: application/json
+
+{
+  "title": "Pelicula Inventada",
+  "year": 2008,
+  "director": "Christopher Nolan",
+  "duration": 152,
+  "poster": "https://i.ebayimg.com/images/g/yokAAOSw8w1YARbm/s-l1200.jpg",
+  "genre": ["Action", "Crime", "Drama"],
+  "rate": 4.0
+}
+
+###Inyección de código malicioso
+POST http://localhost:1234/movies
+Content-Type: application/json
+
+{
+  "title": "Spider-Man: Far From Home",
+  "genre": "Action",
+  "year": "2022",
+  "director": "Peter Parker <script>alert('Hacked!');</script>"
+}
+
+###Otra película, con esta si hemos usado la versión con validaciones
+#hará que salten varias alarmas
+POST http://localhost:1234/movies
+
+{
+  "title": 1,
+  "year": "pepote"
+} 
+
+###Actualizar solo un campo de una película (con el PUT la debes actualizar toda)
+PATCH http://localhost:1234/movies/dcdd0fad-a94c-4810-8acc-5f108d3b18c3
+Content-Type: application/json
+
+{
+  "id":123,
+  "year": 2002
+}
+###Nota: el id no puede modificarse porque no hay validación para el id, por lo que desecha el campo!
