@@ -11,7 +11,6 @@ app.disable('x-powered-by')
 const ACCEPTED_ORIGINS = [
     'http://localhost:8080',
     'http://localhost:1234',
-    'http://midu.dev'
 ]
 app.get('/', (req, res) => {
     res.json({message: 'hola mundo'})
